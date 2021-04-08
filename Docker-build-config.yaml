@@ -1,0 +1,37 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: Sampleweb-docker
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'sampleweb:latest'
+  runPolicy: Serial
+  source:
+    git:
+      ref: master
+      uri: 'https://github.com/gcpchandan4/sampleweb-docker.git'
+    type: Git
+  strategy:
+    dockerStrategy:
+      from:
+        kind: "DcokerImage"
+        name: 'ubuntu:16.04'
+        namespace: openshift
+    type: Docker
+  triggers:
+    - imageChange:
+        lastTriggeredImageID: >-
+          172.30.1.1:5000/openshift/python@sha256:ac50754646f0d37616515fb30467d8743fb12954260ec36c9ecb5a94499447e0
+      type: ImageChange
+    - type: ConfigChange
+    - generic:
+        secret: 2e8d45bbcf8aa94d
+      type: Generic
+    - github:
+        secret: 28f5abd13b20fb81
+      type: GitHub
+status:
+  lastVersion: 9
+
